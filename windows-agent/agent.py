@@ -243,9 +243,9 @@ def main():
     log("=" * 50)
     
     # 创建必要目录
-    RESULTS_DIR.mkdir(exist_ok=True)
-    SCREENSHOTS_DIR.mkdir(exist_ok=True)
-    (AGENT_DIR / "commands").mkdir(exist_ok=True)
+    RESULTS_DIR.mkdir(exist_ok=True, parents=True)
+    SCREENSHOTS_DIR.mkdir(exist_ok=True, parents=True)
+    (AGENT_DIR / "commands").mkdir(exist_ok=True, parents=True)
     
     # 检查依赖
     log("检查环境...")
