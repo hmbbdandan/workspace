@@ -70,6 +70,52 @@
 ## 待完成的任务
 1. [ ] 梦幻西游手游脚本 - 需要蛋总提供截图素材
 2. [ ] 完善截图功能（可能需要处理屏幕录制权限）
+3. [ ] Windows Agent方案 - 待蛋总回到Windows前准备
+
+## Windows Agent 自动化方案（待执行）
+
+### 背景问题
+- 蛋总2-3天不在Windows电脑前
+- 需要自动化测试和调试
+- GitHub在国内不稳定，路由器NAT
+
+### 方案设计：Git轮询模式
+
+```
+我(Mac/飞书) ←→ GitHub ←→ Windows Agent（后台轮询）
+```
+
+### 目录结构
+```
+workspace/
+├── commands/          # 我放命令到这里
+│   └── 01_xxx.sh
+├── results/           # Agent执行结果
+│   └── 01_xxx.json
+├── windows-agent/     # Windows客户端
+│   ├── agent.py       # 主程序
+│   └── config.yaml    # 配置
+└── games/
+```
+
+### Agent功能
+1. 每30秒 git pull 一次
+2. 发现命令 → 执行 → git push 结果
+3. 断网恢复后自动同步
+4. 自动安装 Python / ADB
+
+### 蛋总只需做一次
+1. Windows装Python（国内镜像）
+2. git clone 代码
+3. 双击 agent.py 启动
+
+### 前提确认
+- ✅ GitHub可访问（不稳定，需重试机制）
+- ✅ 路由器NAT上网
+- ❌ 蛋总暂不在Windows前
+
+### 状态
+待蛋总回到Windows前开始部署
 
 ## 经验教训
 - Mac截图可能因硬件加速保护导致黑屏
