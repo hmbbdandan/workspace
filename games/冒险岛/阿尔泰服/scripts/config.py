@@ -1,81 +1,105 @@
 """
-配置文件 - Artale 阿尔泰服脚本
+配置文件 - 冒险岛: 阿尔泰服 (Artale) 脚本
 """
 
-# ========== 游戏窗口设置 ==========
-GAME_WINDOW = {
-    "title": "MapleStory Worlds",  # 窗口标题
-    "min_width": 800,
-    "min_height": 600,
-}
+# ========== MuMu 模拟器配置 ==========
+MUMU_BASE_PORT = 16384  # 实例0的ADB端口
+DEVICE_COUNT = 1         # 默认单设备
 
-# ========== 屏幕识别设置 ==========
+# ========== 图像识别配置 ==========
 SCREEN = {
-    "screenshot_interval": 0.1,  # 截图间隔(秒)
     "template_match_threshold": 0.80,  # 模板匹配阈值
+    "screenshot_interval": 0.1,         # 截图间隔(秒)
 }
 
-# ========== 键盘设置 ==========
-KEYBOARD = {
-    # 移动键
-    "move_left": "left",
-    "move_right": "right",
-    "jump": "up",
-    # 攻击键（根据个人设置调整）
-    "attack": "ctrl",
-    "skill1": "a",  # 技能1
-    "skill2": "s",  # 技能2
-    "skill3": "d",  # 技能3
-    "skill4": "f",  # 技能4
-    # 功能键
-    "pickup": "z",  # 捡物
-    "sit": "h",     # 坐下
-    "buff": "q",    #  Buff技能
-}
-
-# ========== 角色设置 ==========
-CHARACTER = {
-    "name_tag_template": "assets/player_name.png",  # 角色名牌模板
-    "hp_bar_template": "assets/hp_bar.png",          # 血条模板
-    "mp_bar_template": "assets/mp_bar.png",          # 蓝条模板
-}
-
-# ========== 牧师辅助设置 ==========
-PRIEST = {
-    "heal_hp_threshold": 0.3,  # 血量低于30%时治疗
-    "heal_skill": "s",           # 治疗技能键
-    "buff_skill": "q",           # Buff技能键
-    "resurrection_skill": "f",   # 复活技能键
-}
-
-# ========== 防封设置 ==========
+# ========== 防封配置 ==========
 ANTIBAN = {
-    "min_action_delay": 1.0,   # 最小操作延迟(秒)
-    "max_action_delay": 3.0,   # 最大操作延迟(秒)
-    "random_pickup_delay": 0.5,  # 捡物随机延迟
-    "random_movement": True,     # 随机移动
+    "normal": {
+        "min_action_delay": 0.8,
+        "max_action_delay": 2.5,
+    },
+    "fast": {
+        "min_action_delay": 0.2,
+        "max_action_delay": 0.5,
+    },
+    "turbo": {
+        "min_action_delay": 0.1,
+        "max_action_delay": 0.2,
+    },
 }
 
-# ========== 支持的地图 ==========
+# ========== 游戏分辨率 ==========
+# MuMu模拟器默认分辨率
+GAME_RESOLUTION = {
+    "width": 960,
+    "height": 540,
+}
+
+# ========== 常用坐标 (需要根据实际校准) ==========
+# 这些坐标是相对于游戏窗口的百分比位置
+UI_POSITIONS = {
+    # 主界面
+    "minimap": (50, 50),           # 小地图
+    "player_hp_bar": (400, 510),   # 玩家血条
+    "player_mp_bar": (400, 525),    # 玩家蓝条
+
+    # 快捷栏
+    "skill_slot_1": (200, 480),    # 技能槽1
+    "skill_slot_2": (240, 480),     # 技能槽2
+    "skill_slot_3": (280, 480),     # 技能槽3
+
+    # 功能
+    "pickup_btn": (400, 350),       # 捡物按钮
+    "menu_btn": (920, 30),          # 菜单按钮
+}
+
+# ========== 支持的刷怪地图 ==========
 SUPPORTED_MAPS = {
-    "north_forst_training_ground_2": {
-        "name": "北部森林训练场2",
-        "monsters": ["green_mushroom", "spike_mushroom"],
-    },
-    "fire_land_2": {
-        "name": "火焰之地2",
-        "monsters": ["fire_pig", "black_axe_stump"],
-    },
-    "ant_cave_2": {
-        "name": "蚂蚁洞2",
-        "monsters": ["spike_mushroom", "zombie_mushroom"],
-    },
     "cloud_balcony": {
         "name": "云彩露台",
+        "level_range": "1-30",
         "monsters": ["brown_windup_bear", "pink_windup_bear"],
     },
-    "lost_time_1": {
-        "name": "遗失的时间1",
+    "ant_cave": {
+        "name": "蚂蚁洞",
+        "level_range": "10-25",
+        "monsters": ["zombie_mushroom", "spike_mushroom"],
+    },
+    "fire_forest": {
+        "name": "火焰森林",
+        "level_range": "25-40",
+        "monsters": ["fire_pig", "black_axe_stump"],
+    },
+    "lost_time": {
+        "name": "遗失的时间",
+        "level_range": "40-60",
         "monsters": ["evolved_ghost"],
+    },
+    "dead_dragon_nest": {
+        "name": "死龙巢穴",
+        "level_range": "120-150",
+        "monsters": ["dead_dragon"],
+    },
+}
+
+# ========== 职业配置 ==========
+CLASS_CONFIG = {
+    "priest": {
+        "heal_threshold": 0.3,      # 血量低于30%时治疗
+        "heal_skill_slot": 2,        # 治疗技能键位
+        "buff_skill_slot": 1,        # Buff技能键位
+    },
+    "bishop": {
+        "heal_threshold": 0.3,
+        "heal_skill_slot": 2,
+        "buff_skill_slot": 1,
+    },
+    "冰雷": {
+        "attack_skill_slot": 3,
+        "heal_threshold": 0.2,
+    },
+    "黑骑士": {
+        "attack_skill_slot": 4,
+        "heal_threshold": 0.4,
     },
 }

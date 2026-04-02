@@ -1,100 +1,115 @@
-# Artale 阿尔泰服脚本
-
-> 基于开源项目 MapleStoryAutoLevelUp 思路，搭建的自动化脚本框架
+# 冒险岛: 阿尔泰服 (Artale) 自动脚本 v2.0
 
 ## 环境准备
 
-### 1. 安装依赖
+### 1. 安装 MuMu 模拟器
+- 下载地址: https://mumu.163.com/
+- 配置：开启ADB端口（默认16384）
+- 分辨率建议：960x540
+
+### 2. 安装 Python 依赖
 ```bash
 cd scripts
 pip install -r requirements.txt
 ```
 
-### 2. 系统要求
-- Windows 11（网页游戏，需要窗口模式）
-- Python 3.12
-- OpenCV 4.11
-
-### 3. 游戏设置
-- 游戏必须处于**窗口模式**
-- 建议窗口尺寸调小（提高识别准确度）
-- 浏览器推荐 Chrome（多开方便）
-
-## 使用方法
-
-### 基本命令
+### 3. 连接测试
 ```bash
-# 北部森林训练场2 刷绿蘑菇和刺蘑菇
-python auto_levelup.py --map north_forst_training_ground_2 --monsters green_mushroom,spike_mushroom
-
-# 火焰之地2 刷火肥肥
-python auto_levelup.py --map fire_land_2 --monsters fire_pig
-
-# 蚂蚁洞2 刷刺蘑菇和僵尸蘑菇
-python auto_levelup.py --map ant_cave_2 --monsters spike_mushroom,zombie_mushroom
+adb connect 127.0.0.1:16384  # 实例0
+adb devices  # 确认连接
 ```
-
-### 多开方案
-
-**浏览器多开（最简单）：**
-1. Chrome 多用户/多Profile
-2. 每个Profile登录一个账号
-3. 每个浏览器窗口运行一个脚本实例
-
-**代理IP配置：**
-- 每个浏览器实例配不同代理
-- 避免同IP多账号被关联
 
 ## 目录结构
 ```
 scripts/
-├── config.py              # 配置文件
-├── auto_levelup.py        # 主脚本
-├── requirements.txt       # 依赖
+├── main.py                  # 主入口
+├── config.py                # 配置文件
 ├── core/
-│   ├── screen_capture.py  # 屏幕捕获/图像识别
-│   └── keyboard_controller.py  # 键盘控制
-└── assets/
-    ├── monsters/          # 怪物模板图
-    └── maps/              # 地图配置
+│   ├── device_manager.py    # ADB设备管理
+│   ├── screen_capture.py    # 截图+图像识别
+│   └── keyboard_controller.py # 按键控制
+├── assets/
+│   ├── player/              # 玩家角色模板
+│   ├── monsters/            # 怪物模板
+│   ├── npc/                 # NPC模板
+│   └── ui/                  # UI元素模板
+└── requirements.txt
 ```
 
-## 支持的地图和怪物
+## 使用方法
 
-| 地图 | 怪物 |
+### 调试模式（测试连接和截图）
+```bash
+python main.py --test
+```
+
+### 自动刷怪模式
+```bash
+# 需要先提供怪物模板到 assets/monsters/
+python main.py --mode farm --speed fast
+```
+
+### 参数说明
+| 参数 | 说明 |
 |------|------|
-| 北部森林训练场2 | 绿蘑菇、刺蘑菇 |
-| 火焰之地2 | 火肥肥、黑斧木妖 |
-| 蚂蚁洞2 | 刺蘑菇、僵尸蘑菇 |
-| 云彩露台 | 褐色发条熊、粉色发条熊 |
-| 遗失的时间1 | 进化妖魔 |
+| `--port` | ADB端口（默认16384） |
+| `--device` | 设备数量 |
+| `--speed` | 速度模式：normal/fast/turbo |
+| `--mode` | 运行模式：farm/debug |
 
-## 牧师专用配置
+## 速度模式
 
-```python
-# config.py 中的 PRIEST 配置
-PRIEST = {
-    "heal_hp_threshold": 0.3,  # 血量低于30%时治疗
-    "heal_skill": "s",           # 治疗技能键
-    "buff_skill": "q",           # Buff技能键
-}
-```
+| 模式 | 操作延迟 | 适用场景 |
+|------|----------|----------|
+| normal | 0.8-2.5秒 | 保守模式，防封 |
+| fast | 0.2-0.5秒 | 平衡模式 |
+| turbo | 0.1-0.2秒 | 效率优先 |
 
-## ⚠️ 封号风险
+## 截图素材
 
-- Artale 是 Nexon 官方平台
-- 有实时检测 + 离线追封
-- 使用第三方脚本有明确封号风险
-- 建议：低多开数量 + 不同代理IP + 随机化操作
+详细的截图指南见 `assets/README.md`
 
-## 下一步
+需要提供的模板：
+- `assets/player/name_tag.png` - 玩家名字标签
+- `assets/monsters/*.png` - 各种怪物模板
+- `assets/ui/drop_item.png` - 掉落物品
 
-1. [ ] 获取游戏截图，制作怪物模板
-2. [ ] 配置键盘映射（与你的技能键位一致）
-3. [ ] 测试各地图识别效果
-4. [ ] 配置牧师辅助逻辑
-5. [ ] 添加更多地图支持
+## 脚本功能
 
----
+### 已实现
+- ✅ ADB设备连接管理
+- ✅ 屏幕截图（adb screencap）
+- ✅ 模板匹配（OpenCV）
+- ✅ 按键/点击控制
+- ✅ 三档速度模式
+- ✅ 怪物检测与追踪
 
-*基于 GitHub: KenYu910645/MapleStoryAutoLevelUp 的思路*
+### 待实现
+- ❌ 牧师自动治疗
+- ❌ 技能循环释放
+- ❌ 自动补给（买药）
+- ❌ 地图切换检测
+- ❌ BOSS战斗
+
+## 防封建议
+
+1. **使用 fast 模式**，不要用 turbo
+2. **每隔5-10分钟随机移动**
+3. **不要24小时连续跑**
+4. **优先白天运行**
+
+⚠️ **注意**：冒险岛有明确封号风险，请谨慎使用
+
+## 故障排除
+
+### 截图失败
+- 检查ADB连接：`adb devices`
+- 重启模拟器的ADB：`adb kill-server && adb start-server`
+
+### 找不到怪物
+- 确认怪物模板已放置：`ls assets/monsters/`
+- 测试匹配：`python main.py --test`
+
+### 点击位置不准
+- 校准坐标：检查游戏分辨率设置
+- MuMu默认960x540

@@ -1,6 +1,6 @@
-# Artale 阿尔泰服脚本 - 依赖
-opencv-python>=4.11.0
-numpy>=1.26.0
+# 冒险岛: 阿尔泰服 (Artale) 脚本依赖
+opencv-python>=4.8.0
+numpy>=1.24.0
 Pillow>=10.0.0
-pynput>=1.7.0
+ppadb>=1.0.0
 PyYAML>=6.0
