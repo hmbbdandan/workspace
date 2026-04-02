@@ -1,0 +1,5 @@
+{
+  "id": "test_001",
+  "command": "echo Hello from Windows && python --version && ipconfig",
+  "timestamp": "2026-04-02T15:20:00Z"
+}
