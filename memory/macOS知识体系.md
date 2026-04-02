@@ -575,19 +575,97 @@ defaults write com.apple.LaunchServices LSHandlers -array \
 
 ---
 
-## 十二、已知限制和注意事项
+## 十二、截图问题排查（重要）
 
-### 12.1 截图限制
-- 游戏可能有硬件加速保护导致截图黑屏
-- 需要在「屏幕录制」权限中允许对应应用
+### 12.1 macOS截图黑屏的原因
 
-### 12.2 Rosetta 2
+**症状**: `screencapture` 截出来的图是纯黑的，但文件结构正常
+
+**根本原因**: 
+- macOS使用**硬件加速渲染**（Metal/OpenGL）来渲染游戏、视频等内容
+- 硬件加速的内容不经过普通 framebuffer，直接输出到显示器
+- 所以 `screencapture` 截到的是尚未渲染的空白缓冲区
+
+**常见受影响的场景**:
+- 游戏窗口（特别是使用Metal/OpenGL的游戏）
+- 视频播放
+- 受DRM保护的内容
+- Android模拟器（如MuMu）中的游戏
+
+### 12.2 解决方案
+
+#### 方案A: 使用应用内置截图（针对模拟器）
+Android模拟器自带截图功能，应该用**ADB命令**而不是Mac的screencapture：
+
+```bash
+# 方法1: screencap + pull（推荐）
+adb shell screencap -p /sdcard/screen.png
+adb pull /sdcard/screen.png /tmp/game_screen.png
+
+# 方法2: exec-out 直接输出（更高效）
+adb exec-out screencap -p > /tmp/game_screen.png
+
+# 批处理示例
+for i in {1..10}; do
+    adb exec-out screencap -p > "screenshot_$i.png"
+    sleep 1
+done
+```
+
+#### 方案B: 关闭硬件加速（不推荐）
+某些应用可以在设置中关闭硬件加速：
+- Chrome: 设置 → 高级 → 系统 → 关闭"使用硬件加速模式"
+- 但游戏通常不支持关闭硬件加速
+
+#### 方案C: 录屏后提取帧
+```bash
+# 用ffmpeg从视频中提取特定帧
+ffmpeg -i video.mov -vf "select=eq(n\,30)" -vsync vfr frame.png
+```
+
+### 12.3 MuMu模拟器ADB连接
+
+MuMu模拟器默认ADB端口:
+- 实例0: `127.0.0.1:16384`
+- 实例1: `127.0.0.1:16385`
+- 以此类推
+
+```bash
+# 连接到MuMu
+adb connect 127.0.0.1:16384
+
+# 截图
+adb connect 127.0.0.1:16384
+adb -s 127.0.0.1:16384 exec-out screencap -p > screen.png
+```
+
+### 12.4 权限配置
+如果使用了屏幕录制权限，screencapture可能仍然失败（DRM保护）：
+- 系统设置 → 隐私与安全性 → 屏幕录制
+- 确保对应应用有权限
+- 但DRM保护的内容即使有权限也无法截取
+
+---
+
+## 十三、已知限制和注意事项
+
+### 13.1 截图限制
+- ⚠️ **游戏/视频使用硬件加速时，screencapture会黑屏**
+- ⚠️ **DRM保护的内容无法截图**
+- ✅ **正确做法：对模拟器用ADB截图，对Host用screencapture**
+
+### 13.2 Rosetta 2
 - Apple Silicon Mac可以运行x86_64应用
 - 使用 `arch -x86_64 <command>` 强制x86模式
 
-### 12.3 权限问题
+### 13.3 权限问题
 - 某些系统操作需要用户确认
 - 辅助功能权限用于自动化控制
+
+### 13.4 关于蛋总的配置
+- 蛋总的Mac上没有安装ADB（MuMu模拟器可能在另一台机器上）
+- 梦幻西游手游脚本需要连接模拟器进行截图和控制
+- 正确的架构：Host通过ADB连接模拟器进行所有操作
 
 ---
 
