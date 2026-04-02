@@ -1,0 +1,6 @@
+# Artale 阿尔泰服脚本 - 依赖
+opencv-python>=4.11.0
+numpy>=1.26.0
+Pillow>=10.0.0
+pynput>=1.7.0
+PyYAML>=6.0

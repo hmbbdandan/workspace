@@ -1,0 +1,26 @@
+# MuMu 模拟器配置
+# 默认ADB端口: 16384 + 实例索引 (实例0=16384, 实例1=16385, ...)
+MUMU_BASE_PORT = 16384
+DEVICE_COUNT = 5  # 初始5个账号
+
+# 模拟器窗口尺寸 (根据实际调整)
+EMULATOR_WIDTH = 960
+EMULATOR_HEIGHT = 540
+
+# 截图间隔 (秒)
+SCREENSHOT_INTERVAL = 0.5
+
+# 防封配置
+ANTIBAN = {
+    "min_click_delay": 0.8,   # 最小点击延迟(秒)
+    "max_click_delay": 2.5,    # 最大点击延迟(秒)
+    "min_action_gap": 3.0,    # 操作间隔(秒)
+    "max_idle_time": 15.0,    # 随机发呆最长时间(秒)
+    "random_swipe": True,     # 随机滑动
+}
+
+# 图像识别配置
+CV = {
+    "threshold": 0.80,         # 模板匹配阈值
+    "wait_timeout": 30,       # 等待元素超时(秒)
+}
