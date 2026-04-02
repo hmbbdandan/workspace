@@ -17,8 +17,8 @@ from pathlib import Path
 from datetime import datetime
 
 # 配置
-REPO_RAW_URL = "https://raw.githubusercontent.com/YuTan9/workspace/main/windows-agent"
-REPO_API_URL = "https://api.github.com/repos/YuTan9/workspace/contents/windows-agent"
+REPO_RAW_URL = "https://raw.githubusercontent.com/hmbbdandan/workspace/main/windows-agent"
+REPO_API_URL = "https://api.github.com/repos/hmbbdandan/workspace/contents/windows-agent"
 GIT_EMAIL = "agent@windows.local"
 GIT_NAME = "Windows-Agent"
 
@@ -26,6 +26,7 @@ GIT_NAME = "Windows-Agent"
 TEMP_DIR = Path(os.environ.get('TEMP', 'C:/Temp'))
 AGENT_DIR = Path(__file__).parent.absolute()
 RESULTS_DIR = AGENT_DIR / "results"
+SCREENSHOTS_DIR.mkdir(exist_ok=True, parents=True)
 SCREENSHOTS_DIR = AGENT_DIR / "screenshots"
 LOG_FILE = AGENT_DIR / "agent.log"
 
@@ -103,7 +104,7 @@ def git_pull():
         if not (AGENT_DIR / ".git").exists():
             log("初始化Git仓库...")
             run_cmd(f'git init')
-            run_cmd(f'git remote add origin https://github.com/YuTan9/workspace.git')
+            run_cmd(f'git remote add origin https://github.com/hmbbdandan/workspace.git')
         
         # 拉取
         run_cmd('git fetch origin main')
